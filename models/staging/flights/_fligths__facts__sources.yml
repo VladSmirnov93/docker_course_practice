@@ -1,84 +1,71 @@
 sources:
-  - name: dwh_flight
-    schema: demo_src
-    description: >
-      Демонстрационная схема авиаперевозок PostgreSQL.
-      Содержит данные о рейсах, билетах, бронированиях и посадочных талонах.
-
+  - name: demo_src
+    description: Данные из БД авиаперелетов
     tables:
-
       - name: boarding_passes
-        description: >
-          Посадочные талоны пассажиров.
-          Каждая запись соответствует посадке пассажира на конкретный рейс
-          и содержит информацию о месте в самолёте.
+        description: Посадочные талоны
         columns:
           - name: ticket_no
-            description: Номер билета пассажира
+            description: Номер билета
           - name: flight_id
             description: Идентификатор рейса
           - name: boarding_no
-            description: Порядковый номер посадки пассажира
+            description: Номер посадочного талона
           - name: seat_no
-            description: Номер места в самолёте
-
+            description: Номер места
       - name: flights
-        description: >
-          Рейсы авиакомпании.
-          Содержит плановые и фактические данные о вылете и прилёте,
-          аэропорты отправления и назначения, а также статус рейса.
-        freshness:
-          warn_after:
-            count: 24
-            period: hour
-          error_after:
-            count: 48
-            period: hour
-        loaded_at_field: actual_departure
-
+        description: Рейсы
         columns:
           - name: flight_id
-            description: Уникальный идентификатор рейса
+            description: Идентификатор рейса
           - name: flight_no
             description: Номер рейса
           - name: scheduled_departure
-            description: Плановое время вылета
-          - name: actual_departure
-            description: Фактическое время вылета
+            description: Время вылета по расписанию
+          - name: scheduled_arrival
+            description: Время прилёта по расписанию
           - name: departure_airport
             description: Аэропорт отправления
           - name: arrival_airport
-            description: Аэропорт назначения
+            description: Аэропорт прибытия
           - name: status
-            description: Статус рейса (Scheduled, Departed, Arrived, Cancelled)
-
+            description: Статус рейса
+          - name: aircraft_code
+            description: Код самолета
+          - name: actual_departure
+            description: Фактическое время вылета
+          - name: actual_arrival
+            description: Фактическое время прилёта
+        freshness:
+          warn_after:
+            count: 600000
+            period: hour
+          error_after:
+            count: 10000
+            period: day
+          filter: current_timestamp::date - actual_departure::date < 30000
+        loaded_at_field: actual_departure::timestamp
       - name: ticket_flights
-        description: >
-          Связь билетов и рейсов.
-          Таблица многие-ко-многим, так как один билет может включать
-          несколько рейсов (перелёты с пересадками).
+        description: Перелеты
         columns:
           - name: ticket_no
             description: Номер билета
           - name: flight_id
             description: Идентификатор рейса
           - name: fare_conditions
-            description: Класс обслуживания (Economy, Comfort, Business)
+            description: Класс обслуживания
           - name: amount
-            description: Стоимость перелёта по данному рейсу
-
+            description: Стоимость перелета
       - name: tickets
-        description: >
-          Билеты пассажиров.
-          Содержит информацию о пассажирах и их бронированиях.
+        description: Билеты
         columns:
           - name: ticket_no
-            description: Уникальный номер билета
+            description: Номер билета
           - name: book_ref
-            description: Идентификатор бронирования
+            description: Номер бронирования
           - name: passenger_id
             description: Идентификатор пассажира
           - name: passenger_name
             description: Имя пассажира
           - name: contact_data
-            description: Контактные данные пассажира (email, телефон)
+            description: Контактные данные пассажира
