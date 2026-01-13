@@ -1,0 +1,12 @@
+
+seeds:
+  - name: staff
+    description: id сотрудников компании
+    config:
+      column_types:
+        passenger_id: varchar(20)
+    columns:
+      - name: passenger_id
+        tests:
+         - not_null
+         - unique
