@@ -69,3 +69,25 @@ sources:
             description: Имя пассажира
           - name: contact_data
             description: Контактные данные пассажира
+      - name: seats
+        description: Места
+        columns:
+          - name: aircraft_code
+            description: Код самолёта
+          - name: seat_no
+            description: Номер места
+          - name: fare_conditions
+            description: Класс места
+      - name: airports
+        description: Аэропорты
+        columns:
+          - name: airport_code
+            description: Код аэропорта (IATA)
+          - name: airport_name
+            description: Название аэропорта
+          - name: city
+            description: Город, в котором расположен аэропорт
+          - name: coordinates
+            description: Географические координаты аэропорта (долгота, широта)
+          - name: timezone
+            description: Часовой пояс аэропорта
